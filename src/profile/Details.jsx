@@ -10,10 +10,17 @@ function Details({ match }) {
     return (
         <div>
             <h1>My Profile</h1>
-            <p>
-                <strong>Name: </strong> {user.title} {user.firstName} {user.lastName}<br />
-                <strong>Email: </strong> {user.email}
-            </p>
+            
+                <div>{user.title} {user.firstName} {user.lastName}</div>
+                <div>{user.address1}</div>
+                {
+                (user.address2 == '')
+                ? null
+                : <div> {user.address2} </div>  
+                }
+                <div>{user.city} {user.state}, {user.postalCode}</div>
+                <div> {user.email}</div>
+            
             <p><Link to={`${path}/update`}>Update Profile</Link></p>
         </div>
     );

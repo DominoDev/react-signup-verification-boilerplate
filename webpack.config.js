@@ -36,6 +36,7 @@ module.exports = {
         // global app config object
         config: JSON.stringify({
             apiUrl: 'http://localhost:4000'
+            //apiUrl:'https://gs-login-demo.herokuapp.com'
         })
     }
 }

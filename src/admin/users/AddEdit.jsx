@@ -13,6 +13,11 @@ function AddEdit({ history, match }) {
         title: '',
         firstName: '',
         lastName: '',
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        postalCode: '',          
         email: '',
         role: '',
         password: '',
@@ -26,6 +31,15 @@ function AddEdit({ history, match }) {
             .required('First Name is required'),
         lastName: Yup.string()
             .required('Last Name is required'),
+        address1: Yup.string()
+            .required('Address is required'),
+        address2: Yup.string(),            
+        city: Yup.string()
+            .required('City is required'),
+        state: Yup.string()
+            .required('State is required'),
+        postalCode: Yup.string()
+            .required('Zip Code is required'),
         email: Yup.string()
             .email('Email is invalid')
             .required('Email is required'),
@@ -81,7 +95,7 @@ function AddEdit({ history, match }) {
                     if (!isAddMode) {
                         // get user and set form fields
                         accountService.getById(id).then(user => {
-                            const fields = ['title', 'firstName', 'lastName', 'email', 'role'];
+                            const fields = ['title', 'firstName', 'lastName', 'address1', 'address2', 'city', 'state', 'postalCode', 'email', 'role'];
                             fields.forEach(field => setFieldValue(field, user[field], false));
                         });
                     }
@@ -113,6 +127,31 @@ function AddEdit({ history, match }) {
                                 <ErrorMessage name="lastName" component="div" className="invalid-feedback" />
                             </div>
                         </div>
+                        <div className="form-group">
+                            <label>Address</label>
+                            <Field name="address1" type="text" className={'form-control' + (errors.address1 && touched.address1 ? ' is-invalid' : '')} />
+                            <ErrorMessage name="address1" component="div" className="invalid-feedback" />
+                        </div>
+                        <div className="form-group">
+                            <Field name="address2" type="text" className={'form-control' + (errors.addess2 && touched.address2 ? ' is-invalid' : '')} />                                                        
+                        </div>                                                  
+                        <div className="form-row">
+                            <div className="form-group col-5">
+                                <label>City</label>
+                                <Field name="city" type="text" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} />
+                                <ErrorMessage name="city" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group col">
+                                <label>State</label>
+                                <Field name="state" type="text" className={'form-control' + (errors.state && touched.state ? ' is-invalid' : '')} />
+                                <ErrorMessage name="state" component="div" className="invalid-feedback" />
+                            </div>
+                            <div className="form-group col-5">
+                                <label>Zip Code</label>
+                                <Field name="postalCode" type="text" className={'form-control' + (errors.postalCode && touched.postalCode ? ' is-invalid' : '')} />
+                                <ErrorMessage name="postalCode" component="div" className="invalid-feedback" />
+                            </div>
+                        </div>   
                         <div className="form-row">
                             <div className="form-group col-7">
                                 <label>Email</label>
