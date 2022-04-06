@@ -40,6 +40,9 @@ function AdminNav({ match }) {
             <div className="navbar-nav">
                 <NavLink to={`${path}/users`} className="nav-item nav-link">Users</NavLink>
             </div>
+            <div className="navbar-nav">
+                <NavLink to={`${path}/listings`} className="nav-item nav-link">Listings</NavLink>
+            </div>            
         </nav>
     );
 }
