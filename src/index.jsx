@@ -12,9 +12,8 @@ import './styles.less';
 //import { configureFakeBackend } from './_helpers';
 //configureFakeBackend();
 
-// attempt silent token refresh before startup
-accountService.refreshToken().finally(startApp);
-const [location,setLocation]=useState({});
+
+const [locationData,setLocationData]=useState(null);
 const getLocation=()=>{
     fetch('https://api.ipgeolocation.io/ipgeo?apiKey=f4373f8021b7448283da73f9abfa3160',{
       headers : { 
@@ -29,17 +28,23 @@ const getLocation=()=>{
       })
       .then(function(myJson) {
         console.log(myJson);
-        setLocation(myJson)
+        setLocationData(myJson)
       });
   }
   useEffect(()=>{
     getLocation()
   },[])
 
+  // attempt silent token refresh before startup
+  accountService.refreshToken().finally(startApp);
+
 function startApp() { 
     render(
         <Router history={history}>
             <App />
+            {
+                locationData && <p>{locationData.ip}</p>
+            }
         </Router>,
         document.getElementById('app')
     );
