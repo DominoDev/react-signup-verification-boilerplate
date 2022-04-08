@@ -3,11 +3,12 @@ import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
 
 import { Role } from '@/_helpers';
 import { accountService } from '@/_services';
-import { Nav, PrivateRoute, Alert } from '@/_components';
+import { Nav, PrivateRoute, Alert, Geolocation } from '@/_components';
 import { Home } from '@/home';
 import { Profile } from '@/profile';
 import { Admin } from '@/admin';
 import { Account } from '@/account';
+
 
 function App() {
     const { pathname } = useLocation();  
@@ -18,10 +19,14 @@ function App() {
         return subscription.unsubscribe;
     }, []);
 
+    
+ 
+
     return (
         <div className={'app-container' + (user && ' bg-light')}>
             <Nav />
             <Alert />
+            <Geolocation />
             <Switch>
                 <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
                 <PrivateRoute exact path="/" component={Home} />
