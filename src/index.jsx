@@ -14,6 +14,27 @@ import './styles.less';
 
 // attempt silent token refresh before startup
 accountService.refreshToken().finally(startApp);
+const [location,setLocation]=useState({});
+const getLocation=()=>{
+    fetch('https://api.ipgeolocation.io/ipgeo?apiKey=f4373f8021b7448283da73f9abfa3160',{
+      headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+    }
+    )
+      .then(function(response){
+        console.log(response)
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(myJson);
+        setLocation(myJson)
+      });
+  }
+  useEffect(()=>{
+    getLocation()
+  },[])
 
 function startApp() { 
     render(
