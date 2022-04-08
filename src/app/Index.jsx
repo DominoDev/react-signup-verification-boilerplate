@@ -8,6 +8,7 @@ import { Home } from '@/home';
 import { Profile } from '@/profile';
 import { Admin } from '@/admin';
 import { Account } from '@/account';
+import ErrorBoundary from '../_components/ErrorBoundary';
 
 
 function App() {
@@ -26,7 +27,9 @@ function App() {
         <div className={'app-container' + (user && ' bg-light')}>
             <Nav />
             <Alert />
-            <Geolocation />
+            <ErrorBoundary>
+                <Geolocation />
+            </ErrorBoundary>
             <Switch>
                 <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
                 <PrivateRoute exact path="/" component={Home} />

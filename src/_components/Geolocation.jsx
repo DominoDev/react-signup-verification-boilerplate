@@ -1,3 +1,4 @@
+import React from 'react';
 import useGeolocation from "../_helpers/useGeolocation.js"
 
 function Geolocation() {
