@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 
 import config from 'config';
-import { fetchWrapper, history } from '@/_helpers';
+import { fetchWrapper, history, useLocalStorage } from '@/_helpers';
 
 const userSubject = new BehaviorSubject(null);
 const baseUrl = `${config.apiUrl}/accounts`;
@@ -24,9 +24,14 @@ export const accountService = {
     get userValue () { return userSubject.value }
 };
 
-function login(email, password) {
+function login(email, password, remember) {
     return fetchWrapper.post(`${baseUrl}/authenticate`, { email, password })
         .then(user => {
+            if(remember){
+                window.localStorage.setItem("refreshToken", user.refreshToken);
+            }else{
+                window.sessionStorage.setItem("refreshToken", user.refreshToken);
+            }            
             // publish user to subscribers and start timer to refresh token
             userSubject.next(user);
             startRefreshTokenTimer();
@@ -36,15 +41,44 @@ function login(email, password) {
 
 function logout() {
     // revoke token, stop refresh timer, publish null to user subscribers and redirect to login page
-    fetchWrapper.post(`${baseUrl}/revoke-token`, {});
+    let rToken = {};
+    if (sessionStorage.getItem("refreshToken") != null) {
+        rToken.token = sessionStorage.getItem("refreshToken");
+        fetchWrapper.post(`${baseUrl}/revoke-token`, rToken);
+        sessionStorage.removeItem("refreshToken");
+    }
+
+    if (localStorage.getItem("refreshToken") != null) {
+        rToken.token = localStorage.getItem("refreshToken");
+        fetchWrapper.post(`${baseUrl}/revoke-token`, rToken);
+        localStorage.removeItem("refreshToken");
+    }
     stopRefreshTokenTimer();
     userSubject.next(null);
     history.push('/account/login');
 }
 
 function refreshToken() {
-    return fetchWrapper.post(`${baseUrl}/refresh-token`, {})
+    let rToken = {};
+    let session = false;
+    if (sessionStorage.getItem("refreshToken") != null) {
+        if (localStorage.getItem("refreshToken") != null) {
+            rToken.token = localStorage.getItem("refreshToken");
+            fetchWrapper.post(`${baseUrl}/revoke-token`, rToken);
+            localStorage.removeItem("refreshToken");
+        }   
+        rToken.token = sessionStorage.getItem("refreshToken");
+        session = true;
+    }else if(localStorage.getItem("refreshToken") != null){
+        rToken.token = localStorage.getItem("refreshToken");
+    }
+    return fetchWrapper.post(`${baseUrl}/refresh-token`, rToken)
         .then(user => {
+            if(session){
+                sessionStorage.setItem("refreshToken", user.refreshToken);
+            }else{
+                localStorage.setItem("refreshToken", user.refreshToken);
+            }            
             // publish user to subscribers and start timer to refresh token
             userSubject.next(user);
             startRefreshTokenTimer();

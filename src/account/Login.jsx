@@ -8,19 +8,21 @@ import { accountService, alertService } from '@/_services';
 function Login({ history, location }) {
     const initialValues = {
         email: '',
-        password: ''
+        password: '',
+        remember: false
     };
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
             .email('Email is invalid')
             .required('Email is required'),
-        password: Yup.string().required('Password is required')
+        password: Yup.string().required('Password is required'),
+        remember: Yup.bool().optional()
     });
 
-    function onSubmit({ email, password }, { setSubmitting }) {
+    function onSubmit({ email, password, remember }, { setSubmitting }) {
         alertService.clear();
-        accountService.login(email, password)
+        accountService.login(email, password, remember)
             .then(() => {
                 const { from } = location.state || { from: { pathname: "/" } };
                 history.push(from);
@@ -47,6 +49,10 @@ function Login({ history, location }) {
                             <Field name="password" type="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
                             <ErrorMessage name="password" component="div" className="invalid-feedback" />
                         </div>
+                        <div className="form-group form-check">
+                            <Field type="checkbox" name="remember" id="remember" className={'form-check-input '} />
+                            <label htmlFor="remember" className="form-check-label">Remember Me</label>
+                        </div>  
                         <div className="form-row">
                             <div className="form-group col">
                                 <button type="submit" disabled={isSubmitting} className="btn btn-primary">
@@ -59,6 +65,7 @@ function Login({ history, location }) {
                                 <Link to="forgot-password" className="btn btn-link pr-0">Forgot Password?</Link>
                             </div>
                         </div>
+                    
                     </div>
                 </Form>
             )}
