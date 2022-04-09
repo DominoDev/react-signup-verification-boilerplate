@@ -13,18 +13,25 @@ function Nav() {
     }, []);
 
     // only show nav when logged in
-    if (!user) return null;
+    //if (!user) return null;
 
     return (
         <div>
             <nav className="navbar navbar-expand navbar-dark bg-dark">
                 <div className="navbar-nav">
                     <NavLink exact to="/" className="nav-item nav-link">Home</NavLink>
-                    <NavLink to="/profile" className="nav-item nav-link">Profile</NavLink>
-                    {user.role === Role.Admin &&
+                    {user &&
+                        <NavLink to="/profile" className="nav-item nav-link">Profile</NavLink>
+                    }
+                    {user && user.role === Role.Admin &&
                         <NavLink to="/admin" className="nav-item nav-link">Admin</NavLink>
                     }
-                    <a onClick={accountService.logout} className="nav-item nav-link">Logout</a>
+                    {user &&
+                        <a onClick={accountService.logout} className="nav-item nav-link">Logout</a>
+                    }
+                    {!user &&
+                        <NavLink to="/account/login" className="nav-item nav-link">Login</NavLink>
+                    }
                 </div>
             </nav>
             <Route path="/admin" component={AdminNav} />

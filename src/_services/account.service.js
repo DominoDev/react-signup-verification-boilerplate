@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 
 import config from 'config';
-import { fetchWrapper, history, useLocalStorage } from '@/_helpers';
+import { fetchWrapper, history } from '@/_helpers';
 
 const userSubject = new BehaviorSubject(null);
 const baseUrl = `${config.apiUrl}/accounts`;
@@ -31,7 +31,8 @@ function login(email, password, remember) {
                 window.localStorage.setItem("refreshToken", user.refreshToken);
             }else{
                 window.sessionStorage.setItem("refreshToken", user.refreshToken);
-            }            
+            }   
+            
             // publish user to subscribers and start timer to refresh token
             userSubject.next(user);
             startRefreshTokenTimer();
@@ -55,7 +56,7 @@ function logout() {
     }
     stopRefreshTokenTimer();
     userSubject.next(null);
-    history.push('/account/login');
+    history.push('/');
 }
 
 function refreshToken() {
