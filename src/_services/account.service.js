@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 
 import config from 'config';
-import { fetchWrapper, history } from '@/_helpers';
+import { fetchWrapper, history, useStorage } from '@/_helpers';
 
 const userSubject = new BehaviorSubject(null);
 const baseUrl = `${config.apiUrl}/accounts`;
@@ -27,12 +27,15 @@ export const accountService = {
 function login(email, password, remember) {
     return fetchWrapper.post(`${baseUrl}/authenticate`, { email, password })
         .then(user => {
+            
+            //useStorage("refreshToken", user.refreshToken, remember)
+
             if(remember){
                 window.localStorage.setItem("refreshToken", user.refreshToken);
             }else{
                 window.sessionStorage.setItem("refreshToken", user.refreshToken);
-            }   
-            
+            }            
+
             // publish user to subscribers and start timer to refresh token
             userSubject.next(user);
             startRefreshTokenTimer();
